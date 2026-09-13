@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GHANA WTF?!</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    h1 {
+      font-size: 38px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .yellow {
+      background: #f5c400;
+      color: #111;
+    }
+
+    .dark {
+      background: #292929;
+      color: white;
+    }
+
+    .card {
+      background: #1d1d1d;
+      padding: 20px;
+      border-radius: 18px;
+      margin-top: 20px;
+    }
+
+    .question {
+      font-size: 21px;
+      margin: 20px 0;
+    }
+
+    .timer {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .score {
+      font-size: 55px;
+      color: #f5c400;
+      font-weight: bold;
+    }
+
+    input {
+      width: 90%;
+      padding: 15px;
+      border-radius: 10px;
+      border: none;
+      margin: 10px;
+      text-align: center;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div id="home">
+    <div style="font-size:50px;">🇬🇭</div>
+
+    <h1>GHANA WTF?!</h1>
+
+    <p>Can you beat the challenge? 🔥</p>
+
+    <button class="yellow" onclick="startBirthday()">
+      🎂 BIRTHDAY CHALLENGE
+    </button>
+
+    <button class="dark" onclick="showReferral()">
+      👥 INVITE FRIENDS
+    </button>
+
+    <button class="dark" onclick="showLeaderboard()">
+      🏆 LEADERBOARD
+    </button>
+  </div>
+
+
+  <div id="codeScreen" class="hidden">
+    <div class="card">
+
+      <h2>🎂 Birthday Challenge</h2>
+
+      <p>Enter the birthday code</p>
+
+      <input id="birthdayCode" placeholder="Enter code">
+
+      <button class="yellow" onclick="checkCode()">
+        ENTER CHALLENGE
+      </button>
+
+      <button class="dark" onclick="goHome()">
+        BACK
+      </button>
+
+    </div>
+  </div>
+
+
+  <div id="game" class="hidden">
+
+    <div class="card">
+
+      <div id="progress"></div>
+
+      <div class="timer" id="timer">30</div>
+
+      <div class="question" id="question"></div>
+
+      <div id="answers"></div>
+
+    </div>
+
+  </div>
+
+
+  <div id="result" class="hidden">
+
+    <div class="card">
+
+      <h2>🎉 CHALLENGE COMPLETE!</h2>
+
+      <div class="score" id="finalScore">0/10</div>
+
+      <p>Your score</p>
+
+      <button class="yellow" onclick="shareChallenge()">
+        ⚔️ CHALLENGE A FRIEND
+      </button>
+
+      <button class="dark" onclick="showReferral()">
+        👥 INVITE FRIENDS
+      </button>
+
+      <button class="dark" onclick="goHome()">
+        🏠 HOME
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="referral" class="hidden">
+
+    <div class="card">
+
+      <h2>👥 INVITE FRIENDS</h2>
+
+      <p>Invite your friends to play!</p>
+
+      <div id="refLink"></div>
+
+      <button class="yellow" onclick="copyReferral()">
+        📋 COPY LINK
+      </button>
+
+      <button class="dark" onclick="shareChallenge()">
+        📤 SHARE
+      </button>
+
+      <button class="dark" onclick="goHome()">
+        BACK
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div id="leaderboard" class="hidden">
+
+    <div class="card">
+
+      <h2>🏆 LEADERBOARD</h2>
+
+      <p>Birthday Challenge</p>
+
+      <p>Coming soon...</p>
+
+      <button class="dark" onclick="goHome()">
+        BACK
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const BIRTHDAY_CODE = "longthingbirthday";
+
+const questions = [
+
+  {
+    q: "Which Ghanaian lake was formed by a meteorite impact?",
+    a: ["Lake Volta", "Lake Bosumtwi", "Lake Chad", "Lake Victoria"],
+    correct: 1
+  },
+
+  {
+    q: "What is the capital city of Ghana?",
+    a: ["Kumasi", "Tema", "Accra", "Cape Coast"],
+    correct: 2
+  },
+
+  {
+    q: "Which country was formerly known as the Gold Coast?",
+    a: ["Ghana", "Nigeria", "Togo", "Benin"],
+    correct: 0
+  },
+
+  {
+    q: "What is Ghana's currency?",
+    a: ["Naira", "Cedi", "Dalasi", "Franc"],
+    correct: 1
+  },
+
+  {
+    q: "Which ocean borders Ghana?",
+    a: ["Atlantic Ocean", "Indian Ocean", "Pacific Ocean", "Arctic Ocean"],
+    correct: 0
+  },
+
+  {
+    q: "Which city is famous for Cape Coast Castle?",
+    a: ["Tamale", "Cape Coast", "Ho", "Sunyani"],
+    correct: 1
+  },
+
+  {
+    q: "What are Ghana's national colours?",
+    a: ["Red, Yellow and Green", "Blue, White and Red", "Black, White and Green", "Yellow, Blue and Green"],
+    correct: 0
+  },
+
+  {
+    q: "Which Ghanaian food is commonly made from fermented corn dough?",
+    a: ["Fufu", "Banku", "Waakye", "Kenkey"],
+    correct: 3
+  },
+
+  {
+    q: "Which is Ghana's largest artificial lake?",
+    a: ["Lake Bosumtwi", "Lake Volta", "Lake Chad", "Lake Victoria"],
+    correct: 1
+  },
+
+  {
+    q: "What does WTF mean in this game?",
+    a: ["World Trivia Fun", "Wow That's Funny", "Ghana WTF?!", "Win The Fight"],
+    correct: 2
+  }
+
+];
+
+let current = 0;
+let score = 0;
+let timer;
+let timeLeft = 30;
+
+
+function hideAll() {
+
+  document.querySelectorAll(".app > div").forEach(x => {
+    x.classList.add("hidden");
+  });
+
+}
+
+
+function goHome() {
+
+  hideAll();
+
+  document.getElementById("home").classList.remove("hidden");
+
+}
+
+
+function startBirthday() {
+
+  hideAll();
+
+  document.getElementById("codeScreen").classList.remove("hidden");
+
+}
+
+
+function checkCode() {
+
+  const code =
+    document.getElementById("birthdayCode").value.trim();
+
+  if (code !== BIRTHDAY_CODE) {
+
+    alert("❌ Wrong birthday code.");
+
+    return;
+
+  }
+
+  current = 0;
+  score = 0;
+
+  hideAll();
+
+  document.getElementById("game").classList.remove("hidden");
+
+  showQuestion();
+
+}
+
+
+function showQuestion() {
+
+  clearInterval(timer);
+
+  const q = questions[current];
+
+  document.getElementById("progress").textContent =
+    "Question " + (current + 1) +
+    " of " + questions.length;
+
+  document.getElementById("question").textContent =
+    q.q;
+
+  const answers =
+    document.getElementById("answers");
+
+  answers.innerHTML = "";
+
+  q.a.forEach((answer, index) => {
+
+    const button =
+      document.createElement("button");
+
+    button.className = "dark";
+
+    button.textContent = answer;
+
+    button.onclick =
+      () => answerQuestion(index);
+
+    answers.appendChild(button);
+
+  });
+
+
+  timeLeft = 30;
+
+  document.getElementById("timer").textContent =
+    timeLeft;
+
+
+  timer = setInterval(() => {
+
+    timeLeft--;
+
+    document.getElementById("timer").textContent =
+      timeLeft;
+
+    if (timeLeft <= 0) {
+
+      clearInterval(timer);
+
+      nextQuestion();
+
+    }
+
+  }, 1000);
+
+}
+
+
+function answerQuestion(index) {
+
+  clearInterval(timer);
+
+  if (index === questions[current].correct) {
+
+    score++;
+
+  }
+
+  nextQuestion();
+
+}
+
+
+function nextQuestion() {
+
+  current++;
+
+  if (current >= questions.length) {
+
+    finishGame();
+
+  } else {
+
+    showQuestion();
+
+  }
+
+}
+
+
+function finishGame() {
+
+  clearInterval(timer);
+
+  hideAll();
+
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("finalScore").textContent =
+    score + "/10";
+
+}
+
+
+function showReferral() {
+
+  hideAll();
+
+  document.getElementById("referral").classList.remove("hidden");
+
+  const username =
+    "GHANAWTFChallengeBot";
+
+  document.getElementById("refLink").textContent =
+    "https://t.me/" + username + "?start=REF";
+
+}
+
+
+function copyReferral() {
+
+  const text =
+    document.getElementById("refLink").textContent;
+
+  navigator.clipboard.writeText(text);
+
+  alert("✅ Referral link copied!");
+
+}
+
+
+function shareChallenge() {
+
+  const text =
+    "🔥 I just played the GHANA WTF?! Challenge! Can you beat my score? 🇬🇭";
+
+  const url =
+    "https://t.me/GHANAWTFChallengeBot";
+
+  window.open(
+    "https://t.me/share/url?url=" +
+    encodeURIComponent(url) +
+    "&text=" +
+    encodeURIComponent(text),
+    "_blank"
+  );
+
+}
+
+
+function showLeaderboard() {
+
+  hideAll();
+
+  document.getElementById("leaderboard").classList.remove("hidden");
+
+}
+
+</script>
+
+</body>
+      </html>
